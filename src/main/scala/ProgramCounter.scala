@@ -11,17 +11,17 @@ class ProgramCounter extends Module {
   })
 
   //Implement this module here (respect the provided interface, since it used by the tester)
-  val memory = Mem (1 , UInt (16.W))
+  val counter = RegInit(0.U(16.W))
 
-  io.programCounter := memory.read(0.U)
+  io.programCounter := counter
   when (io.run) {
     when (!io.stop) {
       when (io.jump) {
-        memory.write(0.U, io.programCounterJump)
-        io.programCounter := memory.read(0.U)
+        counter := io.programCounterJump
+        io.programCounter := counter
       } .otherwise {
-        memory.write(0.U, memory.read(0.U) + 1.U)
-        io.programCounter := memory.read(0.U)
+        counter := 1.U + counter
+        io.programCounter := counter
       }
     }
   }
