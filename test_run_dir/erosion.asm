@@ -41,7 +41,7 @@ Y_LOOP:
 
     ADD R7, R6, R2 ;Tjek Højre
     LD R7, R7
-    JEQ WRITE_ZERO, R7, R1 ;Hvis vi lægger 21 til er vi koordinaten efter
+    JEQ WRITE_ZERO, R7, R1 ;Hvis vi lægger 1 til er vi koordinaten efter
 
     LI R7, 400 ;output start addresse
     ADD R7, R7, R6 ;beregn hvor vores input skal outputtes
