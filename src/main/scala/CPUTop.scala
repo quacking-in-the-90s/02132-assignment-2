@@ -27,9 +27,41 @@ class CPUTop extends Module {
   val controlUnit = Module(new ControlUnit())
   val alu = Module(new ALU())
 
-  //Connecting the modules
-  //programCounter.io.run := io.run
-  //programMemory.io.address := programCounter.io.programCounter
+  //ProgramMemory
+  programMemory.io.address := programCounter.io.programCounter
+
+  //ControlUnit
+  controlUnit.io.memoryInput := programMemory.io.instructionRead
+
+  //ProgramCounter
+  programCounter.io.stop := controlUnit.io.stop
+  programCounter.io.run := io.run
+  programCounter.io.programCounterJump := controlUnit.io.data
+  programCounter.io.jump :=
+    controlUnit.io.jump ||
+    (controlUnit.io.jumpEquals && alu.io.isZero) ||
+    (controlUnit.io.jumpLessThan && !alu.io.isZero && !alu.io.overflow)
+
+  //DataMemory
+  dataMemory.io.address := registerFile.io.b
+  dataMemory.io.writeEnable := controlUnit.io.dataWriteEnable
+  dataMemory.io.dataWrite := registerFile.io.a
+
+  //registerFile
+  registerFile.io.aSel :=  controlUnit.io.regA
+  registerFile.io.bSel := controlUnit.io.regB
+  registerFile.io.writeSel := controlUnit.io.regC
+  registerFile.io.writeEnable := controlUnit.io.regCIn
+  registerFile.io.writeData := MuxCase(0.U, Seq(
+    (controlUnit.io.registerInputSelect === regInputSelect.DIRECT) -> controlUnit.io.data,
+    (controlUnit.io.registerInputSelect === regInputSelect.ALU) -> alu.io.result,
+    (controlUnit.io.registerInputSelect === regInputSelect.MEMORY) -> dataMemory.io.dataRead
+  ))
+
+  //ALU
+  alu.io.operation := controlUnit.io.operation
+  alu.io.left := registerFile.io.a
+  alu.io.right := Mux(controlUnit.io.aluDirect, controlUnit.io.data, registerFile.io.b)
 
   ////////////////////////////////////////////
   //Continue here with your connections
