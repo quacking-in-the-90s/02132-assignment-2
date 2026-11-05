@@ -40,7 +40,7 @@ class CPUTop extends Module {
   programCounter.io.jump :=
     controlUnit.io.jump ||
     (controlUnit.io.jumpEquals && alu.io.isZero) ||
-    (controlUnit.io.jumpLessThan && !alu.io.isZero && !alu.io.overflow)
+    (controlUnit.io.jumpLessThan && !alu.io.isZero && alu.io.overflow)
 
   //DataMemory
   dataMemory.io.address := registerFile.io.b(15, 0)

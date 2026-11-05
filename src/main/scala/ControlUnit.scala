@@ -176,8 +176,8 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.DIRECT
     }
     is(opcodes.LD) {
-      io.regA := R2
-      io.regAOut := true.B
+      io.regB := R2
+      io.regBOut := true.B 
       io.regCIn := true.B
       io.regC := R1
       io.registerInputSelect := regInputSelect.MEMORY
