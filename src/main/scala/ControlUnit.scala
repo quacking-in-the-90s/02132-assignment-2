@@ -50,7 +50,6 @@ class ControlUnit extends Module {
 
     //ProgramCounter
     val stop = Output(Bool())
-    val run = Output(Bool())
     val jump = Output(Bool())
     val jumpEquals = Output(Bool())
     val jumpLessThan = Output(Bool())
@@ -67,7 +66,6 @@ class ControlUnit extends Module {
   io.regCIn := false.B
   io.stop := false.B
 
-  io.run := false.B
   io.dataWriteEnable := false.B
   io.aluDirect := false.B
   io.regA := 0.U
@@ -80,7 +78,8 @@ class ControlUnit extends Module {
   io.jumpEquals := false.B
   io.jumpLessThan := false.B
 
-  val currentInstruction = io.memoryInput
+  val currentInstruction = RegInit(0.U(32.W))
+  currentInstruction := io.memoryInput
 
   val opcode = currentInstruction(31,26)
   val R1 = currentInstruction(25,23)

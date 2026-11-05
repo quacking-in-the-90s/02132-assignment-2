@@ -43,7 +43,7 @@ class CPUTop extends Module {
     (controlUnit.io.jumpLessThan && !alu.io.isZero && !alu.io.overflow)
 
   //DataMemory
-  dataMemory.io.address := registerFile.io.b
+  dataMemory.io.address := registerFile.io.b(15, 0)
   dataMemory.io.writeEnable := controlUnit.io.dataWriteEnable
   dataMemory.io.dataWrite := registerFile.io.a
 
@@ -62,6 +62,8 @@ class CPUTop extends Module {
   alu.io.operation := controlUnit.io.operation
   alu.io.left := registerFile.io.a
   alu.io.right := Mux(controlUnit.io.aluDirect, controlUnit.io.data, registerFile.io.b)
+
+  io.done := controlUnit.io.stop
 
   ////////////////////////////////////////////
   //Continue here with your connections
