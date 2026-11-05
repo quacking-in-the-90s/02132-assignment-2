@@ -78,14 +78,11 @@ class ControlUnit extends Module {
   io.jumpEquals := false.B
   io.jumpLessThan := false.B
 
-  val currentInstruction = RegInit(0.U(32.W))
-  currentInstruction := io.memoryInput
-
-  val opcode = currentInstruction(31,26)
-  val R1 = currentInstruction(25,23)
-  val R2 = currentInstruction(22,20)
-  val R3 = currentInstruction(19,17)
-  val data = currentInstruction(15,0)
+  val opcode = io.memoryInput(31,26)
+  val R1 = io.memoryInput(25,23)
+  val R2 = io.memoryInput(22,20)
+  val R3 = io.memoryInput(19,17)
+  val data = io.memoryInput(15,0)
 
   switch(opcode) {
     is(opcodes.NOP) { }
