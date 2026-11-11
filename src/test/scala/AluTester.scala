@@ -67,6 +67,27 @@ class AluTester extends AnyFlatSpec with ChiselScalatestTester {
         dut.io.left.poke(65536.U)
         dut.io.right.poke(65536.U)
         dut.clock.step(1)
+
+        //AND 1 and 1
+        dut.io.operation.poke(operations.AND)
+        dut.io.left.poke(2.U)
+        dut.io.right.poke(1.U)
+        dut.io.result.expect(0.U)
+        dut.clock.step(1)
+
+        //OR 1 and 1
+        dut.io.operation.poke(operations.OR)
+        dut.io.left.poke(5.U)
+        dut.io.right.poke(3.U)
+        dut.io.result.expect(7.U)
+        dut.clock.step(1)
+
+        //NOT 5
+        dut.io.operation.poke(operations.NOT)
+        dut.io.left.poke("xffffffff".U)
+        dut.io.right.poke(0.U)
+        dut.io.result.expect(0.U)
+        dut.clock.step(1)
     }
   }
 }
