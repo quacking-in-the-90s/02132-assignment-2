@@ -41,11 +41,7 @@ class ControlUnit extends Module {
     val regB = Output(UInt(3.W))
     //write
     val regC = Output(UInt(3.W))
-
-    val regAOut = Output(Bool())
-    val regBOut = Output(Bool())
     val regCIn = Output(Bool())
-
     val registerInputSelect = Output(UInt(2.W))
 
     //ProgramCounter
@@ -53,6 +49,7 @@ class ControlUnit extends Module {
     val jump = Output(Bool())
     val jumpEquals = Output(Bool())
     val jumpLessThan = Output(Bool())
+
     //Alu
     val operation = Output(UInt(2.W))
     val aluDirect = Output(Bool())
@@ -61,11 +58,8 @@ class ControlUnit extends Module {
     val dataWriteEnable = Output(Bool())
   })
 
-  io.regAOut := false.B
-  io.regBOut := false.B
   io.regCIn := false.B
   io.stop := false.B
-
   io.dataWriteEnable := false.B
   io.aluDirect := false.B
   io.regA := 0.U
@@ -87,8 +81,6 @@ class ControlUnit extends Module {
   switch(opcode) {
     is(opcodes.NOP) { }
     is(opcodes.ADD) {
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.regCIn := true.B
       io.operation := operations.ADD
       io.regA := R2
@@ -97,8 +89,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.SUB) {
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.regCIn := true.B
       io.operation := operations.SUB
       io.regA := R2
@@ -107,8 +97,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.MULT) {
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.regCIn := true.B
       io.operation := operations.MULT
       io.regA := R2
@@ -118,7 +106,6 @@ class ControlUnit extends Module {
 
     }
     is(opcodes.ADDI) {
-      io.regAOut := true.B
       io.regCIn := true.B
       io.operation := operations.ADD
       io.regA := R2
@@ -128,7 +115,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.SUBI) {
-      io.regAOut := true.B
       io.regCIn := true.B
       io.operation := operations.SUB
       io.regA := R2
@@ -138,8 +124,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.OR) {
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.regCIn := true.B
       io.operation := operations.OR
       io.regA := R2
@@ -148,8 +132,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.AND) {
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.regCIn := true.B
       io.operation := operations.AND
       io.regA := R2
@@ -158,7 +140,6 @@ class ControlUnit extends Module {
       io.registerInputSelect := regInputSelect.ALU
     }
     is(opcodes.NOT) {
-      io.regAOut := true.B
       io.regCIn := true.B
       io.operation := operations.NOT
       io.regA := R2
@@ -168,13 +149,11 @@ class ControlUnit extends Module {
     is(opcodes.LI) {
       io.regCIn := true.B
       io.regC := R1
-      //might need a flag or signal to a MUX
       io.data := data
       io.registerInputSelect := regInputSelect.DIRECT
     }
     is(opcodes.LD) {
       io.regB := R2
-      io.regBOut := true.B 
       io.regCIn := true.B
       io.regC := R1
       io.registerInputSelect := regInputSelect.MEMORY
@@ -182,15 +161,12 @@ class ControlUnit extends Module {
     is(opcodes.SD) {
       io.regA := R1
       io.regB := R2
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.dataWriteEnable := true.B
     }
 
     is(opcodes.JMP) {
       io.jump := true.B
       io.data := data
-      //jump might need a MUX to select the different styles
     }
 
     is(opcodes.JEQ) {
@@ -198,31 +174,21 @@ class ControlUnit extends Module {
       io.data := data
       io.regA := R1
       io.regB := R2
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.operation := operations.SUB
-      //might need a flag or signal to a MUX
     }
     is(opcodes.JLT) {
       io.jumpLessThan := true.B
       io.data := data
       io.regA := R1
       io.regB := R2
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.operation := operations.SUB
-      //might need a flag or signal to a MUX
     }
     is(opcodes.JGT) {
       io.jumpLessThan := true.B
       io.data := data
-      //these might need to be switched
       io.regA := R2
       io.regB := R1
-      io.regAOut := true.B
-      io.regBOut := true.B
       io.operation := operations.SUB
-      //might need a flag or signal to a MUX
     }
     is(opcodes.END) {
       io.stop := true.B
