@@ -51,7 +51,7 @@ class ControlUnit extends Module {
     val jumpLessThan = Output(Bool())
 
     //Alu
-    val operation = Output(UInt(2.W))
+    val operation = Output(UInt(3.W))
     val aluDirect = Output(Bool())
 
     //DataMemory
