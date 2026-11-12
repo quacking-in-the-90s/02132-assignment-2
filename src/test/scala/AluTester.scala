@@ -11,51 +11,82 @@ class AluTester extends AnyFlatSpec with ChiselScalatestTester {
         dut.clock.setTimeout(0)
 
         //Add 5 and 10
-        dut.io.operation.poke(0.U)
+        dut.io.operation.poke(operations.ADD)
         dut.io.left.poke(5.U)
         dut.io.right.poke(10.U)
+        dut.io.result.expect(15.U)
         dut.clock.step(1)
 
         //Subtract 7 and 5
-        dut.io.operation.poke(1.U)
+        dut.io.operation.poke(operations.SUB)
         dut.io.left.poke(7.U)
         dut.io.right.poke(5.U)
+        dut.io.result.expect(2.U)
         dut.clock.step(1)
 
         //Multiply 2 and 3
-        dut.io.operation.poke(2.U)
+        dut.io.operation.poke(operations.MULT)
         dut.io.left.poke(2.U)
         dut.io.right.poke(3.U)
+        dut.io.result.expect(6.U)
         dut.clock.step(1)
 
         //Multiply 255 and 0
-        dut.io.operation.poke(2.U)
+        dut.io.operation.poke(operations.MULT)
         dut.io.left.poke(255.U)
         dut.io.right.poke(0.U)
+        dut.io.result.expect(0.U)
+        dut.io.isZero.expect(true.B)
         dut.clock.step(1)
 
         //Add 0 and 0
-        dut.io.operation.poke(0.U)
+        dut.io.operation.poke(operations.ADD)
         dut.io.left.poke(0.U)
         dut.io.right.poke(0.U)
+        dut.io.result.expect(0.U)
+        dut.io.isZero.expect(true.B)
         dut.clock.step(1)
 
-        //Add 2^31 and 2^16
-        dut.io.operation.poke(0.U)
+        //Add 2^31 and (2^32 -1)
+        dut.io.operation.poke(operations.ADD)
         dut.io.left.poke(2147483648L.U)
-        dut.io.right.poke(65536.U)
+        dut.io.right.poke(4294967295L.U)
+        dut.io.overflow.expect(true.B)
         dut.clock.step(1)
 
         //Subtract 5 and 10
-        dut.io.operation.poke(1.U)
+        dut.io.operation.poke(operations.SUB)
         dut.io.left.poke(5.U)
         dut.io.right.poke(10.U)
+        dut.io.overflow.expect(true.B)
+        dut.io.isZero.expect(false.B)
         dut.clock.step(1)
 
         //Multiply 2^16 and 2^16
-        dut.io.operation.poke(2.U)
+        dut.io.operation.poke(operations.MULT)
         dut.io.left.poke(65536.U)
         dut.io.right.poke(65536.U)
+        dut.clock.step(1)
+
+        //AND 1 and 1
+        dut.io.operation.poke(operations.AND)
+        dut.io.left.poke(2.U)
+        dut.io.right.poke(1.U)
+        dut.io.result.expect(0.U)
+        dut.clock.step(1)
+
+        //OR 1 and 1
+        dut.io.operation.poke(operations.OR)
+        dut.io.left.poke(5.U)
+        dut.io.right.poke(3.U)
+        dut.io.result.expect(7.U)
+        dut.clock.step(1)
+
+        //NOT 5
+        dut.io.operation.poke(operations.NOT)
+        dut.io.left.poke("xffffffff".U)
+        dut.io.right.poke(0.U)
+        dut.io.result.expect(0.U)
         dut.clock.step(1)
     }
   }

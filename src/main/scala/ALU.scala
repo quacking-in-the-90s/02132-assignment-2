@@ -14,7 +14,7 @@ object operations {
 class ALU extends Module {
   val io = IO(new Bundle {
     //Define the module interface here (inputs/outputs)
-    val operation = Input(UInt(2.W))
+    val operation = Input(UInt(3.W))
     val left = Input(UInt(32.W))
     val right = Input(UInt(32.W))
 
